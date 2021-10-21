@@ -1,0 +1,40 @@
+Language: Cpp
+
+TabWidth: 4
+# Indent 4 spaces at a time.
+IndentWidth: 4
+# Keep lines under 100 columns long.
+ColumnLimit: 100
+# Always break before braces
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+
+# Indent case labels.
+IndentCaseLabels: true
+# Left-align pointers and references
+PointerAlignment: Left
+# 水平对齐二元和三元表达式的操作数
+AlignOperands: true
+# 连续赋值时，对齐所有等号
+AlignConsecutiveAssignments: true
+# 对齐连续的尾随的注释
+AlignTrailingComments: true
+# 允许短的case标签放在同一行
+AllowShortCaseLabelsOnASingleLine: false
+# 允许排序#include
+SortIncludes: false
+# 连续空行的最大数量
+MaxEmptyLinesToKeep: 1
+# 开圆括号之前添加一个空格: Never, ControlStatements, Always
+SpaceBeforeParens: Never
+# 允许短的函数放在同一行: None, Empty(空函数), All
+AllowShortFunctionsOnASingleLine: Empty
