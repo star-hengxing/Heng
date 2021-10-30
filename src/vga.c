@@ -1,5 +1,5 @@
-#include <asm/x86.h>
-#include <vga.h>
+#include <x86/x86.h>
+#include <x86/vga.h>
 
 static vga* screen          = (vga*)(VGA_START + KERNEL_VIRTUAL_OFFSET);
 static const u32 VGA_WIDTH  = 80;

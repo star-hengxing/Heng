@@ -1,7 +1,8 @@
 #pragma once
 
 #include <type.h>
-#include <SR.h>
+
+#include <x86/SR.h>
 
 #define GDT_ENTRIES 5
 

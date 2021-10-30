@@ -1,8 +1,9 @@
 #pragma once
 
-#include <asm/x86.h>
 #include <type.h>
-#include <SR.h>
+
+#include <x86/x86.h>
+#include <x86/SR.h>
 
 #define IDT_MAX_ENTRIES IDT_MAX_VECTORS
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <printk.h>
+#include <kernel/printk.h>
 
 #define assert(expr)                                                                               \
     if(expr)                                                                                       \

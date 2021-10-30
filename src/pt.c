@@ -1,6 +1,7 @@
-#include <asm/x86.h>
-#include <printk.h>
-#include <pt.h>
+#include <x86/x86.h>
+#include <x86/pt.h>
+
+#include <kernel/printk.h>
 
 #define OFFSET(addr) ((void*)addr - KERNEL_VIRTUAL_OFFSET)
 

@@ -1,5 +1,5 @@
-#include <elf.h>
-#include <io.h>
+#include <tool/elf.h>
+#include <x86/io.h>
 
 #define SECTOR_SIZE 512
 

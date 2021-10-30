@@ -1,4 +1,4 @@
-#include <asm/x86.h>
+#include <x86/x86.h>
 
 .globl idt_handler_array
 .globl exception_handler

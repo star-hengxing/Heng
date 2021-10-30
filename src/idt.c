@@ -76,8 +76,8 @@ void exception_handler(interrupt_regs* stack)
     }
     else
     {
-        printk("[rip->0x%x, int->%d, error code->%d]\n",
-            stack->rip, stack->interrupt_code, stack->error_code);
+        // printk("[rip->0x%x, int->%d, error code->%d]\n",
+        //     stack->rip, stack->interrupt_code, stack->error_code);
     }
 }
 
@@ -122,6 +122,12 @@ void init_timer(u32 frequency)
     outb(0x40, hign);
 }
 
+void keyboard_callback()
+{
+    u8 code = inb(0x60);
+    printk("key code = %c\n", code);
+}
+
 void init_idt()
 {
     const SR_80 idtr =
@@ -146,4 +152,6 @@ void init_idt()
         idt_set(i, (u64)&idt_handler_array[i * IDT_HANDLER_SIZE],
             IDT_DESCRIPTOR_EXTERNAL, 0);
     }
+
+    interrupt_handler_register(33, keyboard_callback);
 }
