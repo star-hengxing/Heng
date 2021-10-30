@@ -3,7 +3,7 @@
 # Feature
 
 - arch:x86-64
-- 4-level page table
+- 3-level page table
 
 # Build
     
