@@ -10,8 +10,8 @@ typedef unsigned short     u16;
 typedef unsigned int       u32;
 typedef unsigned long long u64;
 
-typedef u64 uszie;
-typedef i64 iszie;
+typedef u64 usize;
+typedef i64 isize;
 
 #define NULL  ((void*)0)
 #define bool  i32
