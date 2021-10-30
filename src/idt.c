@@ -1,7 +1,7 @@
 #include <interrupt/8259.h>
 #include <interrupt/idt.h>
-#include <printk.h>
-#include <io.h>
+#include <kernel/printk.h>
+#include <x86/io.h>
 
 static IDT_ENTRY idt_entries[IDT_MAX_ENTRIES];
 

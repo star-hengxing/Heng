@@ -2,12 +2,12 @@
 #include <x86/e820.h>
 #include <x86/pt.h>
 
-#include <memory/pm.h>
-
 #include <kernel/printk.h>
 #include <kernel/panic.h>
 
 #include <tool/assert.h>
+
+#include <memory/pm.h>
 
 // KERNEL_CODE_END align 4K
 extern u8 KERNEL_CODE_END[];

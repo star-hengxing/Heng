@@ -1,6 +1,6 @@
+#include <kernel/printk.h>
 #include <tool/stdarg.h>
-#include <printk.h>
-#include <vga.h>
+#include <x86/vga.h>
 
 void puts(const char* str)
 {

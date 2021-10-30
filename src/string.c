@@ -1,3 +1,4 @@
+#include <lib/string.h>
 #include <type.h>
 
 void memset(void* dest, isize value, usize size)
