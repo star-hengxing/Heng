@@ -1,5 +1,9 @@
 # Heng
 
+A toy os
+
+[Document](doc.md)
+
 # Feature
 
 - arch:x86-64
@@ -9,10 +13,6 @@
     
     make
     make run
-
-# Debug with gdb
-
-    make debug
 
 # Reference
 1. [Intel® 64 and IA-32 architectures software developer's  manual combined volumes 3A, 3B, 3C, and 3D: System programming guide](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)
