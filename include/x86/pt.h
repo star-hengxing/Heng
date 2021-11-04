@@ -29,3 +29,5 @@ inline void cr3_load(const void* pt)
 }
 
 void init_kernel_page_table();
+
+u64 kernel_virtual_memory_map(usize entry, usize p_addr);

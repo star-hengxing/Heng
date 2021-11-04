@@ -20,7 +20,7 @@ static page_map view;
 
 static void init_phsical_page_alloctor()
 {
-    view.front = &zone_list[1].memory[512];
+    view.front = &zone_list[1].memory[256];
     view.tail  = &zone_list[1].memory[zone_list[1].count];
 }
 

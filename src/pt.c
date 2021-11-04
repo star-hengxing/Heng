@@ -1,16 +1,14 @@
+#include <tool/assert.h>
 #include <x86/x86.h>
 #include <x86/pt.h>
 
-#include <kernel/printk.h>
-
 #define OFFSET(addr) ((void*)addr - KERNEL_VIRTUAL_OFFSET)
 
-#define KERNEL_PAGE_TABLE(addr) ((u64)OFFSET(addr) | (PAGE_PRESENT | PAGE_WRITE))
+#define KERNEL_PAGE_TABLE_DIRECTORY(addr) ((u64)OFFSET(addr) | (PAGE_PRESENT | PAGE_WRITE))
 
-#define print(expr) printk("%s: 0x%x\n", #expr, expr)
+#define KERNEL_PAGE_TABLE_ATTRIBUTE(addr) (addr | PAGE_PRESENT | PAGE_WRITE | PAGE_PS | PAGE_GLOBAL)
 
-#define kernel_page_table_set(table, level, entry, value) \
-    table.table_##level[entry] = (u64)value
+#define SET_KERNEL_PAGE_TABLE(table, level, entry, value) table.table_##level[entry] = (u64)value
 
 extern u8 KERNEL_CODE_END[];
 
@@ -21,15 +19,20 @@ static page_table_2M kernel_page_table =
     (u64*)(KERNEL_CODE_END + PAGE_SIZE * 2)
 };
 
+u64 kernel_virtual_memory_map(usize entry, usize p_addr)
+{
+    assert(entry < PAGE_TABLE_MAX_ENTRY);
+    SET_KERNEL_PAGE_TABLE(kernel_page_table, 1, entry, KERNEL_PAGE_TABLE_ATTRIBUTE(p_addr));
+    return KERNEL_VIRTUAL_OFFSET + entry * PAGE_SIZE * PAGE_TABLE_MAX_ENTRY;
+}
+
 void init_kernel_page_table()
 {
-    kernel_page_table_set(kernel_page_table, 3, 256, KERNEL_PAGE_TABLE(&kernel_page_table.table_2[0]));
-    kernel_page_table_set(kernel_page_table, 2, 0, KERNEL_PAGE_TABLE(&kernel_page_table.table_1[0]));
-    kernel_page_table_set(kernel_page_table, 1, 0, (PAGE_PRESENT | PAGE_WRITE | PAGE_PS));
-    
-    print(kernel_page_table.table_3[256]);
-    print(kernel_page_table.table_2[0]);
-    print(kernel_page_table.table_1[0]);
+    SET_KERNEL_PAGE_TABLE(kernel_page_table, 3, PAGE_TABLE_MAX_ENTRY / 2,
+                          KERNEL_PAGE_TABLE_DIRECTORY(&kernel_page_table.table_2[0]));
+    SET_KERNEL_PAGE_TABLE(kernel_page_table, 2, 0,
+                          KERNEL_PAGE_TABLE_DIRECTORY(&kernel_page_table.table_1[0]));
+    SET_KERNEL_PAGE_TABLE(kernel_page_table, 1, 0, KERNEL_PAGE_TABLE_ATTRIBUTE(0));
 
     cr3_load(OFFSET(kernel_page_table.table_3));
 }

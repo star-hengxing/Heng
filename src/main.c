@@ -10,6 +10,7 @@
 #include <lib/string.h>
 
 #include <kernel/printk.h>
+#include <kernel/thread.h>
 
 extern u8 KERNEL_CODE_END[];
 extern u8 KERNEL_CODE_START[];
@@ -24,13 +25,24 @@ void main()
     vga_clear();
 
     init_kernel_page_table();
-
+    
     init_gdt();
-
     init_idt();
-    INTERRUPT_ENABLE();
+    // INTERRUPT_ENABLE();
+
+    printk("kernel code: 0x%x-0x%x\n", KERNEL_CODE_START, KERNEL_CODE_END);
+    printk("kernel page table: 0x%x-0x%x\n", KERNEL_CODE_END, KERNEL_CODE_END + PAGE_SIZE * 3);
 
     init_physical_page();
+
+    init_kernel_thread();
+
+    while(1)
+    {
+        INTERRUPT_DISBALE();
+        printk("Main_Thread ");
+        INTERRUPT_ENABLE();
+    }
 
     while(1)
     {

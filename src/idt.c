@@ -1,6 +1,7 @@
 #include <interrupt/8259.h>
 #include <interrupt/idt.h>
 #include <kernel/printk.h>
+#include <x86/SR.h>
 #include <x86/io.h>
 
 static IDT_ENTRY idt_entries[IDT_MAX_ENTRIES];
@@ -74,35 +75,17 @@ void exception_handler(interrupt_regs* stack)
     {
         idt[stack->interrupt_code].handler(stack);
     }
-    else
-    {
-        // printk("[rip->0x%x, int->%d, error code->%d]\n",
-        //     stack->rip, stack->interrupt_code, stack->error_code);
-    }
+    // printk("[rip->0x%x, int->%d, error code->%d]\n",
+    // stack->rip, stack->interrupt_code, stack->error_code);
 }
 
 inline void interrupt_handler_register(u8 vector, idt_handle fn)
 {
-    if(idt[vector].handler)
-    {
-        printk("Interruption %d has been registered\n", vector);
-    }
-    else
-    {
-        idt[vector].handler = fn;
-    }
-}
-
-void timer_callback(interrupt_regs* stack)
-{
-    printk("hello world!\n");
+    idt[vector].handler = fn;
 }
 
 void init_timer(u32 frequency)
 {
-    // 注册时间相关的处理函数
-    interrupt_handler_register(32, timer_callback);
-
     // Intel 8253/8254 PIT芯片 I/O端口地址范围是40h~43h
     // 输入频率为 1193180，frequency 即每秒中断次数
     u32 divisor = 1193180 / frequency;
@@ -125,33 +108,28 @@ void init_timer(u32 frequency)
 void keyboard_callback()
 {
     u8 code = inb(0x60);
-    printk("key code = %c\n", code);
+    printk("%c", code);
 }
 
 void init_idt()
 {
+    pic_remap();
+
+    u8 i = 0;
+    for(; i < 48; i++)
+    {
+        idt_set(i, (u64)&idt_handler_array[i * IDT_HANDLER_SIZE],
+            IDT_FAULT, 0);
+    }
+    
+    // idt_set(32, 0, IDT_FAULT, 0);
+    interrupt_handler_register(33, keyboard_callback);
+    init_timer(200);
+
     const SR_80 idtr =
     {
         (u16)sizeof(IDT_ENTRY) * IDT_MAX_ENTRIES - 1,
         (u64)&idt_entries[0]
     };
-
-    idt_load(&idtr);
-
-    pic_remap();
-
-    u8 i = 0;
-    for(; i < 32; i++)
-    {
-        idt_set(i, (u64)&idt_handler_array[i * IDT_HANDLER_SIZE],
-            IDT_DESCRIPTOR_FAULT, 0);
-    }
-    
-    for(;i < 48; i++)
-    {
-        idt_set(i, (u64)&idt_handler_array[i * IDT_HANDLER_SIZE],
-            IDT_DESCRIPTOR_EXTERNAL, 0);
-    }
-
-    interrupt_handler_register(33, keyboard_callback);
+    IDT_LOAD(idtr);
 }

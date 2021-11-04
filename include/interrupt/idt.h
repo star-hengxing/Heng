@@ -1,25 +1,33 @@
 #pragma once
 
-#include <type.h>
-
 #include <x86/x86.h>
-#include <x86/SR.h>
+#include <type.h>
 
 #define IDT_MAX_ENTRIES IDT_MAX_VECTORS
 
-#define IDT_DESCRIPTOR_16_INTERRUPT 0x06
-#define IDT_DESCRIPTOR_16_TRAP 	    0x07
-#define IDT_DESCRIPTOR_32_TASK 	    0x05
-#define IDT_DESCRIPTOR_32_INTERRUPT 0x0E
-#define IDT_DESCRIPTOR_32_TRAP		0x0F
-#define IDT_DESCRIPTOR_RING1  		0x40
-#define IDT_DESCRIPTOR_RING2  		0x20
-#define IDT_DESCRIPTOR_RING3  		0x60
-#define IDT_DESCRIPTOR_PRESENT		0x80
+#define IDT_TYPE_TASK 	   0x0C
+#define IDT_TYPE_INTERRUPT 0x0E
+#define IDT_TYPE_TRAP	   0x0F
+#define IDT_RING_0         0x00
+#define IDT_RING_1         0x40
+#define IDT_RING_2         0x20
+#define IDT_RING_3         0x60
+#define IDT_PRESENT        0x80
 
-#define IDT_DESCRIPTOR_FAULT	(IDT_DESCRIPTOR_32_INTERRUPT | IDT_DESCRIPTOR_PRESENT)
-#define IDT_DESCRIPTOR_EXTERNAL (IDT_DESCRIPTOR_32_INTERRUPT | IDT_DESCRIPTOR_PRESENT)
-#define IDT_DESCRIPTOR_TRAP  	(IDT_DESCRIPTOR_32_INTERRUPT | IDT_DESCRIPTOR_PRESENT | IDT_DESCRIPTOR_RING3)
+#define IDT_FAULT	 (IDT_PRESENT | IDT_TYPE_INTERRUPT)
+#define IDT_EXTERNAL (IDT_PRESENT | IDT_TYPE_INTERRUPT)
+#define IDT_TRAP  	 (IDT_PRESENT | IDT_RING_3)
+
+#define IDT_LOAD(idtr) asm volatile("lidt %0" :: "m"(idtr))
+
+typedef struct
+{
+    u64 rip;
+    u64 cs;
+    u64 eflags;
+    u64 rsp;
+    u64 ss;
+} interrupt_auto_push;
 
 typedef struct
 {
@@ -40,12 +48,7 @@ typedef struct
     u64 r15;
     u64 interrupt_code;
     u64 error_code; // 错误代码(有中断错误代码的中断会由CPU压入)
-    // 以下由处理器自动压入
-    u64 rip;
-    u64 cs;
-    u64 eflags;
-    u64 rsp;
-    u64 ss;
+    interrupt_auto_push regs;
 } interrupt_regs;
 
 typedef struct
@@ -72,8 +75,3 @@ void interrupt_count();
 void init_idt();
 
 void interrupt_handler_register(u8 vector, idt_handle fn);
-
-inline void idt_load(const SR_80* idtr)
-{
-	asm volatile("lidt %0" :: "m"(*idtr));
-}
