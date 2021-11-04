@@ -43,7 +43,7 @@ void vga_putchar(u8 c)
         VGA_Y = 24;
     }
 
-    if(c == '\n' || VGA_X > VGA_WIDTH)
+    if(c == '\n' || VGA_X >= VGA_WIDTH)
     {
         VGA_Y++;
         VGA_X = 0;
