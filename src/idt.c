@@ -105,12 +105,6 @@ void init_timer(u32 frequency)
     outb(0x40, hign);
 }
 
-void keyboard_callback()
-{
-    u8 code = inb(0x60);
-    printk("%c", code);
-}
-
 void init_idt()
 {
     pic_remap();
@@ -122,9 +116,7 @@ void init_idt()
             IDT_FAULT, 0);
     }
     
-    // idt_set(32, 0, IDT_FAULT, 0);
-    interrupt_handler_register(33, keyboard_callback);
-    init_timer(200);
+    // init_timer(200);
 
     const SR_80 idtr =
     {

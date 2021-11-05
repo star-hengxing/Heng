@@ -12,6 +12,8 @@
 #include <kernel/printk.h>
 #include <kernel/thread.h>
 
+#include <keyboard.h>
+
 extern u8 KERNEL_CODE_END[];
 extern u8 KERNEL_CODE_START[];
 extern u8 TEXT_END[];
@@ -28,21 +30,22 @@ void main()
     
     init_gdt();
     init_idt();
-    // INTERRUPT_ENABLE();
+    INTERRUPT_ENABLE();
 
     printk("kernel code: 0x%x-0x%x\n", KERNEL_CODE_START, KERNEL_CODE_END);
     printk("kernel page table: 0x%x-0x%x\n", KERNEL_CODE_END, KERNEL_CODE_END + PAGE_SIZE * 3);
 
     init_physical_page();
 
-    init_kernel_thread();
+    init_keyboard();
+    // init_kernel_thread();
 
-    while(1)
-    {
-        INTERRUPT_DISBALE();
-        printk("Main_Thread ");
-        INTERRUPT_ENABLE();
-    }
+    // while(1)
+    // {
+    //     INTERRUPT_DISBALE();
+    //     printk("Main_Thread ");
+    //     INTERRUPT_ENABLE();
+    // }
 
     while(1)
     {
