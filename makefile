@@ -63,12 +63,16 @@ setup:
 	$(OBJCOPY) $(OBJCOPY_FLAGS) $(DEBUG_DIR)/entry_64 build/entry_64.bin
 
 build/kernel.elf: $(OBJECTS)
-	$(LD) $(LD_64_FLAGS) -T script/kernel.ld $^ -o $(DEBUG_DIR)/kernel
-	$(OBJCOPY) -S $(DEBUG_DIR)/kernel $@
-	$(DD) if=$@ of=$(IMAGE) bs=512 seek=2 conv=notrunc
+	@echo "Generate "$(DEBUG_DIR)/kernel
+	@$(LD) $(LD_64_FLAGS) -T script/kernel.ld $^ -o $(DEBUG_DIR)/kernel
+	@echo "Generate "$@
+	@$(OBJCOPY) -S $(DEBUG_DIR)/kernel $@
+	@echo "Writing "$(IMAGE)
+	@$(DD) if=$@ of=$(IMAGE) bs=512 seek=2 conv=notrunc
 
 $(OBJ_DIR)/%.o: src/%.c
-	$(CC) $(C_64_FLAGS) $< -o $@
+	@echo "Generate "$(notdir $@)
+	@$(CC) $(C_64_FLAGS) $< -o $@
 
 $(OBJ_DIR)/%.o: src/%.S
 	$(CC) $(C_64_FLAGS) $< -o $@
