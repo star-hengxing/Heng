@@ -34,5 +34,5 @@ void init_kernel_page_table()
                           KERNEL_PAGE_TABLE_DIRECTORY(&kernel_page_table.table_1[0]));
     SET_KERNEL_PAGE_TABLE(kernel_page_table, 1, 0, KERNEL_PAGE_TABLE_ATTRIBUTE(0));
 
-    cr3_load(OFFSET(kernel_page_table.table_3));
+    asm volatile("mov %%rax, %%cr3" :: "a"(OFFSET(kernel_page_table.table_3)));
 }
